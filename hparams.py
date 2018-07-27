@@ -137,6 +137,7 @@ hparams = tf.contrib.training.HParams(
     student_gate_channels=128,
     use_scale=False,
     iaf_shift=False,
+    share_condition_net=True
 )
 
 

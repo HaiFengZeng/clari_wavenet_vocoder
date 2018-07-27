@@ -963,11 +963,11 @@ if __name__ == "__main__":
     args = docopt(__doc__)
     print("Command line args:\n", args)
     checkpoint_dir = args["--checkpoint-dir"]
-    checkpoint_path = '/home/jinqiangzeng/work/mypycharm/wavenet/wavenet_vocoder/checkpoints/checkpoint_step000010000.pth'#args["--checkpoint"]
+    checkpoint_path = None#args["--checkpoint"]
     checkpoint_restore_parts = args["--restore-parts"]
     speaker_id = args["--speaker-id"]
     speaker_id = int(speaker_id) if speaker_id is not None else None
-    preset = args["--preset"]
+    preset = './presets/ljspeech_gaussian.json'#args["--preset"]
 
     data_root = args["--data-root"]
     if data_root is None:
@@ -1004,7 +1004,7 @@ if __name__ == "__main__":
                            lr=hparams.initial_learning_rate, betas=(
             hparams.adam_beta1, hparams.adam_beta2),
                            eps=hparams.adam_eps, weight_decay=hparams.weight_decay)
-    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=200 * 1000)
+    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=100 * 1000,gamma=0.5)
 
     if checkpoint_restore_parts is not None:
         restore_parts(checkpoint_restore_parts, model)

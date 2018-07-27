@@ -90,7 +90,9 @@ def clari_wavenet(out_channels=2,
                   freq_axis_kernel_size=3,
                   scalar_input=False,
                   use_speaker_embedding=True,
-                  skip_channels=128
+                  skip_channels=128,
+                  use_skip=True,
+                  iaf_shift=False
                   ):
     from wavenet_vocoder import ClariWaveNet
 
@@ -106,6 +108,8 @@ def clari_wavenet(out_channels=2,
                          freq_axis_kernel_size=freq_axis_kernel_size,
                          scalar_input=scalar_input,
                          use_speaker_embedding=use_speaker_embedding,
-                         skip_out_channels=skip_channels
+                         skip_out_channels=skip_channels,
+                         use_skip=use_skip,
+                         iaf_shift=iaf_shift
                          )
     return model

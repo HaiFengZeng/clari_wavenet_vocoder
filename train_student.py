@@ -60,16 +60,16 @@ if use_cuda:
 def get_args():
     parser = argparse.ArgumentParser(description="Trainining script for Student WaveNet vocoder")
     parser.add_argument('--data_root', type=str, default=None, help='Directory contains preprocessed features.')
-    parser.add_argument('--checkpoint_dir', type=str, default='checkpoints',
+    parser.add_argument('--checkpoint_dir', type=str, default='student_checkpoints',
                         help='Directory where to save model checkpoints')
     parser.add_argument('--hparams', type=str, default='', help='Hyper parameters')
-    parser.add_argument('--preset', type=str, default=None, help='Path of preset parameters (json)')
-    parser.add_argument('--checkpoint_teacher', type=str, default=None,
+    parser.add_argument('--preset', type=str, default='./presets/ljspeech_gaussian.json', help='Path of preset parameters (json)')
+    parser.add_argument('--checkpoint_teacher', type=str, default='./checkpoints/checkpoint_step000405000_ema.pth',
                         help='Restore teacher model from checkpoint path must given.')
     parser.add_argument('--checkpoint_student', type=str, default=None,
                         help='Restore student model from checkpoint path if given.')
     parser.add_argument('--restore_parts', type=str, default=None, help='Restore part of the model.')
-    parser.add_argument('--log_event_path', type=str, default=None, help='Log event path.')
+    parser.add_argument('--log_event_path', type=str, default='log/gaussian', help='Log event path.')
     parser.add_argument('--reset_optimizer', type=str, default=None, help='Reset optimizer.')
     parser.add_argument('--speaker_id', type=int, default=None,
                         help='Use specific speaker of data in case for multi-speaker datasets.')
@@ -295,9 +295,9 @@ class ExponentialMovingAverage(object):
         self.shadow[name] -= (1.0 - self.decay) * update_delta
 
 
-def clone_as_averaged_model(model, ema, name_):
+def clone_as_averaged_model(model, ema, name_,hparams):
     assert ema is not None
-    averaged_model = build_model(name_)
+    averaged_model = build_model(hparams,name_)
     if use_cuda:
         averaged_model = averaged_model.cuda()
     averaged_model.load_state_dict(model.state_dict())
@@ -342,13 +342,13 @@ class KLDivLoss(nn.Module):
         super(KLDivLoss, self).__init__()
 
     def forward(self, y_hat, mu, scale, mask, sample_T=32):
-        if hparams.out_type == 'Gaussian':
-            mu_teacher, scale_teacher = y_hat[:, :, 0], torch.exp(y_hat[:, :, 1])
+        if hparams.output_type == 'Gaussian':
+            mu_teacher, scale_teacher = y_hat[:, :1, :], torch.exp(y_hat[:, 1:, :])
             loss = torch.log(scale / scale_teacher) + (scale ** 2 - scale_teacher ** 2 + (mu - mu_teacher) ** 2) / (
                     2 * scale ** 2)
-            kl_loss = torch.sum(loss * mask) / mask.sum()
+            kl_loss = torch.sum(loss[:,:,:-1] * mask.permute(0,2,1)) / mask.sum()
             return kl_loss
-        elif hparams.out_type == "MOL":
+        elif hparams.output_type == "MOL":
             h_pt_ps = 0
             for i in range(sample_T):
                 u = torch.zeros(mu.size()).uniform_(1e-5, 1 - 1e-5)
@@ -518,32 +518,43 @@ def time_string():
     return datetime.now().strftime('%Y-%m-%d %H:%M')
 
 
-def save_waveplot(path, y_hat, y_target, y_student):
-    sr = hparams.sample_rate
+def save_waveplot(path, y_teacher, y_target, y_student,writer):
 
+    sr = hparams.sample_rate
     plt.figure(figsize=(16, 9))
     plt.subplot(3, 1, 1)
+    plt.title('target')
     librosa.display.waveplot(y_target, sr=sr)
     plt.subplot(3, 1, 2)
-    librosa.display.waveplot(y_hat, sr=sr)
+    plt.title('teacher')
+    librosa.display.waveplot(y_teacher, sr=sr)
     plt.subplot(3, 1, 3)
+    plt.title('student')
     librosa.display.waveplot(y_student, sr=sr)
     plt.tight_layout()
     plt.savefig(path, format="png")
+    if writer:
+        import io
+        from PIL import Image
+        buff = io.BytesIO()
+        plt.savefig(buff, format='png')
+        plt.close()
+        buff.seek(0)
+        im = np.array(Image.open(buff))
+        writer.add_image('image', im)
     plt.close()
 
 
 def eval_model(global_step, writer, teacher_model, student_model, y, c, g, input_lengths, eval_dir, ema=None):
     if ema is not None:
         print("Using averaged model for evaluation")
-        student_model = clone_as_averaged_model(student_model, ema, name_='student')
+        student_model = clone_as_averaged_model(student_model, ema, name_=hparams.name,hparams=hparams)
 
     student_model.eval()
     teacher_model.eval()
     idx = np.random.randint(0, len(y))
 
     length = input_lengths[idx].data.cpu().numpy()
-
     # (T,)
     y_target = y[idx].view(-1).data.cpu().numpy()[:length]
 
@@ -596,7 +607,7 @@ def eval_model(global_step, writer, teacher_model, student_model, y, c, g, input
     if use_cuda:
         z = z.cuda()
     with torch.no_grad():
-        y_student, _, _ = student_model(z, c=c, g=g, softmax=False, use_scale=hparams.use_scale)
+        predict_list,y_student, _, _ = student_model(z, c=c, g=g, softmax=False, use_scale=hparams.use_scale)
     y_student = y_student.view(-1).cpu().data.numpy()
 
     # Save audio
@@ -610,7 +621,7 @@ def eval_model(global_step, writer, teacher_model, student_model, y, c, g, input
 
     # save figure
     path = join(eval_dir, "step{:09d}_waveplots.png".format(global_step))
-    save_waveplot(path, y_hat, y_target, y_student)
+    save_waveplot(path, y_student=y_student, y_target=y_target, y_teacher=y_hat,writer=writer)
 
 
 def save_states(global_step, writer, y_hat, y, y_student, input_lengths, checkpoint_dir=None):
@@ -660,7 +671,8 @@ def save_states(global_step, writer, y_hat, y, y_student, input_lengths, checkpo
     librosa.output.write_wav(path, y_student, sr=hparams.sample_rate)
     path = join(audio_dir, "step{:09d}_target.wav".format(global_step))
     librosa.output.write_wav(path, y, sr=hparams.sample_rate)
-
+    path = join(audio_dir, "step{:09d}.jpg".format(global_step))
+    save_waveplot(path,y_teacher=y_hat,y_student=y_student,y_target=y,writer=writer)
 
 def __train_step(phase, epoch, global_step, global_test_step,
                  teacher_model, student_model, kl_criterion, pl_criterion, optimizer, writer,
@@ -678,6 +690,7 @@ def __train_step(phase, epoch, global_step, global_test_step,
     teacher_model.eval()
     if train:
         student_model.train()
+        student_model.upsample_conv.eval()
         step = global_step
     else:
         student_model.eval()
@@ -702,6 +715,25 @@ def __train_step(phase, epoch, global_step, global_test_step,
         c = c.cuda() if c is not None else None
         g = g.cuda() if g is not None else None
 
+
+
+    # Apply model: Run the model in regular eval mode
+    # NOTE: softmax is handled in F.cross_entrypy_loss
+    # y_hat: (B x C x T)
+
+    # get mu and scale from student model
+    if hparams.output_type=="MOL":
+        u = torch.zeros(x.size()).uniform_(1e-5, 1 - 1e-5)
+        if use_cuda:
+            u = u.cuda()
+        z = torch.log(u) - torch.log(1 - u)
+    else:
+        z = torch.randn(x.size())
+    predict_list, predict, mu_tot, scale_tot = torch.nn.parallel.data_parallel(student_model, (
+        z, c, g, False, True, hparams.use_scale))
+
+    y_hat = torch.nn.parallel.data_parallel(teacher_model, (predict, c, g, False))
+
     # (B, T, 1)
     mask = sequence_mask(input_lengths, max_len=x.size(-1)).unsqueeze(-1)
     if hparams.iaf_shift:
@@ -711,30 +743,15 @@ def __train_step(phase, epoch, global_step, global_test_step,
     else:
         mask = mask[:, 1:, :]
         x = x[:, :, 1:]
-
-    # Apply model: Run the model in regular eval mode
-    # NOTE: softmax is handled in F.cross_entrypy_loss
-    # y_hat: (B x C x T)
-
-    # get mu and scale from student model
-
-    u = torch.zeros(x.size()).uniform_(1e-5, 1 - 1e-5)
-    if use_cuda:
-        u = u.cuda()
-    z = torch.log(u) - torch.log(1 - u)
-    predict_list, predict, mu_tot, scale_tot = torch.nn.parallel.data_parallel(student_model, (
-        z, c, g, False, True, hparams.use_scale))
-
-    y_hat = torch.nn.parallel.data_parallel(teacher_model, (predict, c, g, False))
-
-    kl_loss = kl_criterion(y_hat, mu_tot, mask)
-    power_loss = pl_criterion(x, predict)
+    kl_loss = kl_criterion(y_hat, mu_tot,scale_tot, mask)
+    power_loss = pl_criterion(x, predict[:,:,:-1])
     loss = kl_loss + power_loss
 
     if train and step > 0 and step % hparams.checkpoint_interval == 0:
         save_states(step, writer, y_hat, y, predict, input_lengths, checkpoint_dir)
         save_checkpoint(student_model, optimizer, step, checkpoint_dir, epoch, ema)
-
+    if train and step > 0 and step % 200 == 0:
+        save_states(step, writer, y_hat, y,predict, input_lengths, checkpoint_dir)
     if do_eval:
         # NOTE: use train step (i.e., global_step) for filename
         eval_model(global_step, writer, teacher_model, student_model, y, c, g, input_lengths, eval_dir, ema)
@@ -865,7 +882,7 @@ def save_checkpoint(model, optimizer, step, checkpoint_dir, epoch, ema=None):
         print("Saved averaged checkpoint:", checkpoint_path)
 
 
-def build_model(name=None):
+def build_model(hparams,name=None):
     assert name is not None
 
     if is_mulaw_quantize(hparams.input_type):
@@ -877,7 +894,7 @@ def build_model(name=None):
         s += "Notice that upsample conv layers will never be used."
         warn(s)
     if name == "teacher":
-        model = getattr(builder, hparams.builder)(
+        model = getattr(builder, "wavenet")(
             out_channels=hparams.out_channels,
             layers=hparams.layers,
             stacks=hparams.stacks,
@@ -932,7 +949,8 @@ def build_model(name=None):
             upsample_scales=hparams.upsample_scales,
             freq_axis_kernel_size=hparams.freq_axis_kernel_size,
             scalar_input=is_scalar_input(hparams.input_type),
-            use_skip=hparams.use_skip
+            use_skip=hparams.use_skip,
+            iaf_shift=hparams.iaf_shift
         )
     else:
         raise Exception("No such model")
@@ -943,8 +961,7 @@ def _load(checkpoint_path):
     if use_cuda:
         checkpoint = torch.load(checkpoint_path)
     else:
-        checkpoint = torch.load(checkpoint_path,
-                                map_location=lambda storage, loc: storage)
+        checkpoint = torch.load(checkpoint_path,map_location=lambda storage, loc: storage)
     return checkpoint
 
 
@@ -1069,7 +1086,7 @@ if __name__ == "__main__":
             hparams.parse_json(f.read())
     # Override hyper parameters
     hparams.parse(args.hparams)
-    assert hparams.name == "wavenet_vocoder"
+    assert hparams.name == "clari"
     print(hparams_debug_string())
 
     os.makedirs(checkpoint_dir, exist_ok=True)
@@ -1078,8 +1095,10 @@ if __name__ == "__main__":
     data_loaders = get_data_loaders(data_root, speaker_id, test_shuffle=True)
 
     # Model
-    teacher_model = build_model(name="teacher")
-    student_model = build_model(name='student')
+    teacher_model = build_model(hparams,name="teacher")
+    student_model = build_model(hparams,name='clari')
+    if hparams.share_condition_net:
+        student_model.load_teacher_upsample_conv(teacher_model)
     print("*" * 50, "==> This is Teacher Model <==", "*" * 50)
     print(teacher_model)
     print("*" * 50, "==> This is Student Model <==", "*" * 50)
@@ -1092,11 +1111,10 @@ if __name__ == "__main__":
     print("Receptive field (samples / ms): {} / {}".format(
         receptive_field, receptive_field / fs * 1000))
 
-    optimizer = optim.Adam(student_model.parameters(),
-                           lr=hparams.initial_learning_rate, betas=(
-            hparams.adam_beta1, hparams.adam_beta2),
+    optimizer = optim.Adam(filter(lambda p: p.requires_grad, student_model.parameters()),
+                           lr=hparams.initial_learning_rate, betas=(hparams.adam_beta1, hparams.adam_beta2),
                            eps=hparams.adam_eps, weight_decay=hparams.weight_decay)
-
+    # scheduler = optim.lr_scheduler.StepLR(optimizer, 10 * 1000, gamma=0.5)
     # restore teacher
     assert checkpoint_teacher_path is not None
     if checkpoint_teacher_path is not None:

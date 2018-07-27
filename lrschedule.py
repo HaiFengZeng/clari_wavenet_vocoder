@@ -17,6 +17,11 @@ def step_learning_rate_decay(init_lr, global_step,
     return init_lr * anneal_rate ** (global_step // anneal_interval)
 
 
+def step_learning_rate(init_lr, global_step,
+                             gamma=0.5,
+                             step_size=100000):
+    return init_lr * pow(gamma,int(global_step/step_size))
+
 def cyclic_cosine_annealing(init_lr, global_step, T, M):
     """Cyclic cosine annealing
 

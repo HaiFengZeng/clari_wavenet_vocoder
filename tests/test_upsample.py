@@ -1,5 +1,6 @@
 from wavenet_vocoder.upsample import UpSampleConv,ClariUpsampleConv
 from train import get_data_loaders
+from train import eval_model,load_checkpoint,build_model
 
 def test_upsample():
     data_loaders = get_data_loaders('../data/ljspeech',-1)
@@ -11,6 +12,10 @@ def test_upsample():
             c = c.unsqueeze(1)
             upconv1 = UpSampleConv()
             c1 =  upconv1(c)
-            upconv2 = ClariUpsampleConv()
-            c2 = upconv2(c)
-            print(c1 == c2)
+            break
+
+
+
+def test_sample():
+    preste = '../presets/ljspeech_gaussian.json'
+    model = build_model()

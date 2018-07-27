@@ -7,7 +7,7 @@ log
 generated
 data/
 text
-
+teacher_checkpoints/
 # Created by https://www.gitignore.io
 
 ### Python ###

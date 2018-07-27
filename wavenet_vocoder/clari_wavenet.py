@@ -77,11 +77,11 @@ class ClariWaveNet(nn.Module):
 
             self.iaf_layers.append(iaf_layer)
             self.last_layers.append(nn.ModuleList([
-                nn.PReLU(),
+                nn.ReLU(),
                 Conv1d1x1(skip_out_channels, residual_channels,
                           weight_normalization=weight_normalization) if self.use_skip else
                 Conv1d1x1(residual_channels, residual_channels, weight_normalization=weight_normalization),
-                nn.PReLU(),
+                nn.ReLU(),
                 Conv1d1x1(residual_channels, out_channels, weight_normalization=weight_normalization)
             ]))
 
@@ -99,6 +99,13 @@ class ClariWaveNet(nn.Module):
             self.upsample_conv = None
 
         self.receptive_field = receptive_field_size(layers, stacks, kernel_size)
+
+    def load_teacher_upsample_conv(self, teacher):
+        upsample_state_dict = teacher.upsample_conv.state_dict()
+        self.upsample_conv.load_state_dict(upsample_state_dict)
+        for param in self.upsample_conv.parameters():
+            param.requires_grad = False
+        self.upsample_conv.eval()
 
     def has_speaker_embedding(self):
         return self.embed_speakers is not None

@@ -3,11 +3,12 @@ from torch import nn
 from hparams import hparams
 from wavenet_vocoder.modules import ConvTranspose2d
 import os
-
+from hparams import hparams
 
 class UpSampleConv(nn.Module):
     def __init__(self,
                  path=None,
+                 share_condition=True,
                  weight_normalization=True):
         super(UpSampleConv, self).__init__()
         self.path = path
@@ -20,7 +21,8 @@ class UpSampleConv(nn.Module):
                                     weight_normalization=weight_normalization)
             self.upsample_conv.append(convt)
             self.upsample_conv.append(nn.LeakyReLU(inplace=True,negative_slope=0.2))
-        if path:
+        # load condition form teacher wavenet
+        if path and share_condition:
             self.load()
 
     def forward(self, c):
@@ -48,3 +50,17 @@ class ClariUpsampleConv(nn.Module):
         for f in self.upsample_conv:
             c = f(c)
         return c
+
+if __name__ == '__main__':
+    checkpoint = torch.load('/home/jinqiangzeng/work/mypycharm/wavenet/clari_wavenet_vocoder/checkpoints/checkpoint_step000430000_ema.pth')
+    preset = '/home/jinqiangzeng/work/mypycharm/wavenet/clari_wavenet_vocoder/presets/ljspeech_gaussian.json'
+    with open(preset) as f:
+        hparams.parse_json(f.read())
+    from train_student import build_model
+    teacher = build_model(hparams,'teacher')
+    teacher.load_state_dict(checkpoint['state_dict'])
+    upsample_state_dict = teacher.upsample_conv.state_dict()
+    upsample_conv = UpSampleConv()
+    upsample_conv.load_state_dict(upsample_state_dict)
+    for para in upsample_conv.parameters():
+        para.requires_grad=False
