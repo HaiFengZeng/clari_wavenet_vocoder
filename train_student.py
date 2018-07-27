@@ -330,22 +330,24 @@ def get_power_loss_v1(y, y1, frame_length=1024, hop_length=256):
     s = torch.stft(x, frame_length=frame_length, hop=hop_length, fft_size=1024, window=window)
     s1 = torch.stft(x1, frame_length=frame_length, hop=hop_length, fft_size=1024, window=window)
 
-    s_power = torch.pow(s, 2)
-    s1_power = torch.pow(s1, 2)
-
-    ss = torch.mean(s_power, 1) - torch.mean(s1_power, 1)
-    return torch.sum(ss ** 2) / batch
+    s_sqrt = torch.sqrt(torch.sum(s ** 2, -1))
+    s1_sqrt = torch.sqrt(torch.sum(s1 ** 2, -1))
+    ss = s_sqrt -s1_sqrt
+    return torch.sum(ss ** 2) / (batch*(frame_length/2+1))
 
 
 class KLDivLoss(nn.Module):
-    def __init__(self):
+    def __init__(self,lambda_=4):
         super(KLDivLoss, self).__init__()
+        self.lambda_ = lambda_
 
     def forward(self, y_hat, mu, scale, mask, sample_T=32):
         if hparams.output_type == 'Gaussian':
+            # teacher p
             mu_teacher, scale_teacher = y_hat[:, :1, :], torch.exp(y_hat[:, 1:, :])
             loss = torch.log(scale / scale_teacher) + (scale ** 2 - scale_teacher ** 2 + (mu - mu_teacher) ** 2) / (
                     2 * scale ** 2)
+            loss += self.lambda_*(torch.log(scale_teacher)-torch.log(scale))**2
             kl_loss = torch.sum(loss[:,:,:-1] * mask.permute(0,2,1)) / mask.sum()
             return kl_loss
         elif hparams.output_type == "MOL":
@@ -869,7 +871,7 @@ def save_checkpoint(model, optimizer, step, checkpoint_dir, epoch, ema=None):
     print("Saved checkpoint:", checkpoint_path)
 
     if ema is not None:
-        averaged_model = clone_as_averaged_model(model, ema, name_='student')
+        averaged_model = clone_as_averaged_model(model, ema, name_='student',hparams=hparams)
         checkpoint_path = join(
             checkpoint_dir, "checkpoint_step{:09d}_ema.pth".format(global_step))
         torch.save({
