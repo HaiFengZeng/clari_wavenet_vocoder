@@ -373,7 +373,7 @@ class KLDivLoss(nn.Module):
 
 
 class PowerLoss(nn.Module):
-    def __init__(self, power_loss_fn=get_power_loss):
+    def __init__(self, power_loss_fn=get_power_loss_v1):
         super(PowerLoss, self).__init__()
         self.loss_fn = power_loss_fn
 
