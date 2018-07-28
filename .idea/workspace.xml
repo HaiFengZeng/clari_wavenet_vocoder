@@ -11,6 +11,7 @@
       <change beforePath="" afterPath="$PROJECT_DIR$/../../../pycharm/P_wavenet_vocoder/wavenet_vocoder/spectral.py" />
       <change beforePath="" afterPath="$PROJECT_DIR$/../../../pycharm/P_wavenet_vocoder/wavenet_vocoder/upsample.py" />
       <change beforePath="$PROJECT_DIR$/train_student.py" afterPath="$PROJECT_DIR$/train_student.py" />
+      <change beforePath="$PROJECT_DIR$/wavenet_vocoder/clari_wavenet.py" afterPath="$PROJECT_DIR$/wavenet_vocoder/clari_wavenet.py" />
       <change beforePath="$PROJECT_DIR$/../../../pycharm/P_wavenet_vocoder/hparams.py" afterPath="$PROJECT_DIR$/../../../pycharm/P_wavenet_vocoder/hparams.py" />
       <change beforePath="$PROJECT_DIR$/../../../pycharm/P_wavenet_vocoder/preprocess.py" afterPath="$PROJECT_DIR$/../../../pycharm/P_wavenet_vocoder/preprocess.py" />
       <change beforePath="$PROJECT_DIR$/../../../pycharm/P_wavenet_vocoder/synthesis_student.py" afterPath="$PROJECT_DIR$/../../../pycharm/P_wavenet_vocoder/synthesis_student.py" />
@@ -31,7 +32,7 @@
   </component>
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/wavenet_vocoder$preprocess.coverage" NAME="preprocess Coverage Results" MODIFIED="1532341671335" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/clari_wavenet_vocoder$train_student.coverage" NAME="train_student Coverage Results" MODIFIED="1532680767837" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/clari_wavenet_vocoder$train_student.coverage" NAME="train_student Coverage Results" MODIFIED="1532687195480" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/wavenet_vocoder$train.coverage" NAME="train Coverage Results" MODIFIED="1532409621821" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/clari_wavenet_vocoder$upsample.coverage" NAME="upsample Coverage Results" MODIFIED="1532669589767" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/wavenet_vocoder" />
     <SUITE FILE_PATH="coverage/clari_wavenet_vocoder$train.coverage" NAME="train Coverage Results" MODIFIED="1532488907931" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
@@ -39,16 +40,73 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="train_student.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/train_student.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="365">
-              <caret line="873" column="92" lean-forward="false" selection-start-line="873" selection-start-column="92" selection-end-line="873" selection-end-column="92" />
-              <folding>
-                <element signature="e#0#15#0" expanded="true" />
-                <element signature="e#14812#19255#0" expanded="false" />
-              </folding>
-            </state>
+      <file leaf-file-name="step000500960_waveplots.png" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/checkpoints/test_eval/step000500960_waveplots.png">
+          <provider selected="true" editor-type-id="images">
+            <state />
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="step000021000_waveplots.png" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/student_checkpoints/student/train_eval/step000021000_waveplots.png">
+          <provider selected="true" editor-type-id="images">
+            <state />
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="step000525000_waveplots.png" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/checkpoints/train_eval/step000525000_waveplots.png">
+          <provider selected="true" editor-type-id="images">
+            <state />
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="step000530000_waveplots.png" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/checkpoints/train_eval/step000530000_waveplots.png">
+          <provider selected="true" editor-type-id="images">
+            <state />
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="step000532270_waveplots.png" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/checkpoints/test_eval/step000532270_waveplots.png">
+          <provider selected="true" editor-type-id="images">
+            <state />
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="step000057000_waveplots.png" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/student_checkpoints/student/train_eval/step000057000_waveplots.png">
+          <provider selected="true" editor-type-id="images">
+            <state />
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="step000054000_waveplots.png" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/student_checkpoints/student/train_eval/step000054000_waveplots.png">
+          <provider selected="true" editor-type-id="images">
+            <state />
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="step000051000_waveplots.png" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/student_checkpoints/student/train_eval/step000051000_waveplots.png">
+          <provider selected="true" editor-type-id="images">
+            <state />
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="step000046965_waveplots.png" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/student_checkpoints/student/test_eval/step000046965_waveplots.png">
+          <provider selected="true" editor-type-id="images">
+            <state />
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="step000031310_waveplots.png" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/student_checkpoints/student/test_eval/step000031310_waveplots.png">
+          <provider selected="true" editor-type-id="images">
+            <state />
           </provider>
         </entry>
       </file>
@@ -74,7 +132,6 @@
       <find>KL</find>
       <find>pl_cri</find>
       <find>mask</find>
-      <find>get_args</find>
       <find>build</find>
       <find>plot</find>
       <find>save_wav</find>
@@ -83,6 +140,10 @@
       <find>eval</find>
       <find>save_state</find>
       <find>sample_from_discretized_mix_logistic</find>
+      <find>get_args</find>
+      <find>K</find>
+      <find>writer.add_</find>
+      <find>200</find>
       <find>Power</find>
     </findStrings>
   </component>
@@ -103,8 +164,8 @@
         <option value="$PROJECT_DIR$/presets/ljspeech_gaussian.json" />
         <option value="$PROJECT_DIR$/hparams.py" />
         <option value="$PROJECT_DIR$/wavenet_vocoder/upsample.py" />
-        <option value="$PROJECT_DIR$/wavenet_vocoder/clari_wavenet.py" />
         <option value="$PROJECT_DIR$/.gitignore" />
+        <option value="$PROJECT_DIR$/wavenet_vocoder/clari_wavenet.py" />
         <option value="$PROJECT_DIR$/train_student.py" />
       </list>
     </option>
@@ -115,11 +176,11 @@
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds">
     <option name="x" value="65" />
     <option name="y" value="24" />
     <option name="width" value="1853" />
-    <option name="height" value="1048" />
+    <option name="height" value="1020" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -148,13 +209,20 @@
             <path>
               <item name="clari_wavenet_vocoder" type="b2602c69:ProjectViewProjectNode" />
               <item name="clari_wavenet_vocoder" type="462c0819:PsiDirectoryNode" />
-              <item name="checkpoints" type="462c0819:PsiDirectoryNode" />
+              <item name="student_checkpoints" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="clari_wavenet_vocoder" type="b2602c69:ProjectViewProjectNode" />
               <item name="clari_wavenet_vocoder" type="462c0819:PsiDirectoryNode" />
-              <item name="checkpoints" type="462c0819:PsiDirectoryNode" />
-              <item name="train_eval" type="462c0819:PsiDirectoryNode" />
+              <item name="student_checkpoints" type="462c0819:PsiDirectoryNode" />
+              <item name="student" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="clari_wavenet_vocoder" type="b2602c69:ProjectViewProjectNode" />
+              <item name="clari_wavenet_vocoder" type="462c0819:PsiDirectoryNode" />
+              <item name="student_checkpoints" type="462c0819:PsiDirectoryNode" />
+              <item name="student" type="462c0819:PsiDirectoryNode" />
+              <item name="test_eval" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -332,15 +400,16 @@
     </history-entry>
   </component>
   <component name="ToolWindowManager">
-    <frame x="65" y="-4" width="1855" height="1084" extended-state="6" />
+    <frame x="65" y="24" width="1853" height="1020" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3842932" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.41189674" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32984293" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3947644" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.22498618" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3939394" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2252352" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="SciView" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -372,18 +441,18 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/train_student.py</url>
-          <line>631</line>
-          <option name="timeStamp" value="47" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/train_student.py</url>
-          <line>660</line>
+          <line>671</line>
           <option name="timeStamp" value="49" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/train_student.py</url>
-          <line>667</line>
+          <line>678</line>
           <option name="timeStamp" value="50" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/train_student.py</url>
+          <line>657</line>
+          <option name="timeStamp" value="52" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
@@ -393,12 +462,37 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="51" />
+      <option name="time" value="53" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="debuggerHistoryManager">
     <expressions id="evaluateExpression">
+      <expression>
+        <expression-string>student_log_scale.min()</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>student_log_scale.max()</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>student_log_scale</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>teacher_log_scale</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>writer.add_histogram('log_teacher_scale', teacher_log_scale, global_step)</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
       <expression>
         <expression-string>input_lengths[idx].data.cpu().numpy()[0]</expression-string>
         <language-id>Python</language-id>
@@ -419,154 +513,9 @@
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
-      <expression>
-        <expression-string>input_lengths[idx]</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>input_lengths</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>input_lengths[idx].cpu().numpy()</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>teacher.upsample_conv.state_dict()</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>teacher.load_state_dict(checkpoint['state_dict'])</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>hparams.layers</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/checkpoints/test_eval/step000203515_waveplots.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/checkpoints/train_eval/step000245000_waveplots.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/checkpoints/train_eval/step000240000_waveplots.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/checkpoints/train_eval/step000260000_waveplots.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/checkpoints/train_eval/step000250000_waveplots.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/checkpoints/train_eval/step000255000_waveplots.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/checkpoints/test_eval/step000234825_waveplots.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/checkpoints/train_eval/step000290000_waveplots.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/checkpoints/train_eval/step000285000_waveplots.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/checkpoints/train_eval/step000280000_waveplots.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/checkpoints/test_eval/step000266135_waveplots.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/checkpoints/train_eval/step000270000_waveplots.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/checkpoints/test_eval/step000250480_waveplots.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/checkpoints/train_eval/step000265000_waveplots.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/checkpoints/test_eval/step000281790_waveplots.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/checkpoints/train_eval/step000295000_waveplots.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/checkpoints/train_eval/step000300000_waveplots.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/checkpoints/test_eval/step000297445_waveplots.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/checkpoints/test_eval/step000375720_waveplots.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/checkpoints/test_eval/step000344410_waveplots.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/checkpoints/train_eval/step000380000_waveplots.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/checkpoints/train_eval/step000400000_waveplots.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/checkpoints/test_eval/step000391375_waveplots.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/checkpoints/train_eval/step000405000_waveplots.png">
       <provider selected="true" editor-type-id="images">
         <state />
@@ -653,16 +602,6 @@
           <caret line="684" column="11" lean-forward="false" selection-start-line="684" selection-start-column="4" selection-end-line="684" selection-end-column="11" />
           <folding>
             <element signature="e#0#15#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/wavenet_vocoder/clari_wavenet.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="540">
-          <caret line="102" column="34" lean-forward="false" selection-start-line="102" selection-start-column="8" selection-end-line="102" selection-end-column="34" />
-          <folding>
-            <element signature="e#4600#6943#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -754,15 +693,146 @@
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/train_student.py">
+    <entry file="file://$PROJECT_DIR$/../../../pycharm/P_wavenet_vocoder/train_student1.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="365">
-          <caret line="873" column="92" lean-forward="false" selection-start-line="873" selection-start-column="92" selection-end-line="873" selection-end-column="92" />
+        <state relative-caret-position="289">
+          <caret line="793" column="23" lean-forward="false" selection-start-line="793" selection-start-column="12" selection-end-line="793" selection-end-column="23" />
           <folding>
-            <element signature="e#0#15#0" expanded="true" />
-            <element signature="e#14812#19255#0" expanded="false" />
+            <element signature="e#0#15#0" expanded="false" />
           </folding>
         </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../../../anaconda3/envs/py35/lib/python3.5/site-packages/tensorboardX/writer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="186">
+          <caret line="323" column="0" lean-forward="false" selection-start-line="323" selection-start-column="0" selection-end-line="323" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/wavenet_vocoder/clari_wavenet.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="648">
+          <caret line="171" column="98" lean-forward="false" selection-start-line="171" selection-start-column="98" selection-end-line="171" selection-end-column="98" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/checkpoints/train_eval/step000480000_waveplots.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/checkpoints/train_eval/step000475000_waveplots.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/checkpoints/test_eval/step000469650_waveplots.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/checkpoints/train_eval/step000485000_waveplots.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/checkpoints/train_eval/step000500000_waveplots.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/checkpoints/train_eval/step000495000_waveplots.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/checkpoints/test_eval/step000485305_waveplots.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/train_student.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-6198">
+          <caret line="382" column="8" lean-forward="false" selection-start-line="382" selection-start-column="8" selection-end-line="382" selection-end-column="8" />
+          <folding>
+            <element signature="e#0#15#0" expanded="false" />
+            <element signature="e#15093#19536#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/checkpoints/test_eval/step000516615_waveplots.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/student_checkpoints/student/train_eval/step000015000_waveplots.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/student_checkpoints/student/train_eval/step000018000_waveplots.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/student_checkpoints/student/test_eval/step000015655_waveplots.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/checkpoints/test_eval/step000500960_waveplots.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/student_checkpoints/student/train_eval/step000021000_waveplots.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/checkpoints/train_eval/step000525000_waveplots.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/checkpoints/train_eval/step000530000_waveplots.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/checkpoints/test_eval/step000532270_waveplots.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/student_checkpoints/student/train_eval/step000057000_waveplots.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/student_checkpoints/student/train_eval/step000054000_waveplots.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/student_checkpoints/student/train_eval/step000051000_waveplots.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/student_checkpoints/student/test_eval/step000046965_waveplots.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/student_checkpoints/student/test_eval/step000031310_waveplots.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
       </provider>
     </entry>
   </component>

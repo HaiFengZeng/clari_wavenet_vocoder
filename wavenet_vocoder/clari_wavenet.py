@@ -169,8 +169,8 @@ class ClariWaveNet(nn.Module):
             if use_scale:
                 mu_s_f, scale_s_f = new_z[:, :1, :], new_z[:, 1:, :]
             else:
-                mu_s_f, scale_s_f = new_z[:, :1, :], torch.exp(torch.clamp(new_z[:, 1:, :], min=0.0000001))  # log_scale
-            mu_s_f = torch.clamp(mu_s_f, -1, 1 - 2.0 / hparams.quantize_channels)
+                mu_s_f, scale_s_f = new_z[:, :1, :], torch.exp(torch.clamp(new_z[:, 1:, :], min=-7))  # log_scale
+            # mu_s_f = torch.clamp(mu_s_f, -1, 1 - 2.0 / hparams.quantize_channels)
             mu_tot = mu_s_f + mu_tot * scale_s_f
             scale_tot = scale_tot * scale_s_f
             z = z * scale_s_f + mu_s_f

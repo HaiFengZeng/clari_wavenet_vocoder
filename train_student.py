@@ -66,7 +66,9 @@ def get_args():
     parser.add_argument('--preset', type=str, default='./presets/ljspeech_gaussian.json', help='Path of preset parameters (json)')
     parser.add_argument('--checkpoint_teacher', type=str, default='./checkpoints/checkpoint_step000405000_ema.pth',
                         help='Restore teacher model from checkpoint path must given.')
-    parser.add_argument('--checkpoint_student', type=str, default=None,
+    parser.add_argument('--checkpoint_student', type=str,
+                        #default='./student_checkpoints/student/checkpoint_step000003000.pth',
+                        default=None,
                         help='Restore student model from checkpoint path if given.')
     parser.add_argument('--restore_parts', type=str, default=None, help='Restore part of the model.')
     parser.add_argument('--log_event_path', type=str, default='log/gaussian', help='Log event path.')
@@ -341,23 +343,26 @@ class KLDivLoss(nn.Module):
         super(KLDivLoss, self).__init__()
         self.lambda_ = lambda_
 
-    def forward(self, y_hat, mu, scale, mask, sample_T=32):
+    def forward(self, y_hat, mu_q, scale_q, mask, sample_T=32):
         if hparams.output_type == 'Gaussian':
-            # teacher p
-            mu_teacher, scale_teacher = y_hat[:, :1, :], torch.exp(y_hat[:, 1:, :])
-            loss = torch.log(scale / scale_teacher) + (scale ** 2 - scale_teacher ** 2 + (mu - mu_teacher) ** 2) / (
-                    2 * scale ** 2)
-            loss += self.lambda_*(torch.log(scale_teacher)-torch.log(scale))**2
+            # teacher p,student q
+            mu_p, scale_p = y_hat[:, :1, :], torch.exp(y_hat[:, 1:, :])
+            loss = torch.log(scale_p / scale_q) + (scale_q ** 2 - scale_p ** 2 + (mu_q - mu_p) ** 2) / (
+                    2 * scale_p ** 2)
+            loss += torch.log(scale_q / scale_p) + (scale_p ** 2 - scale_q ** 2 + (mu_q - mu_p) ** 2) / (
+                    2 * scale_q ** 2)
+            loss /= 2
+            loss += self.lambda_*(torch.log(scale_p)-torch.log(scale_q))**2
             kl_loss = torch.sum(loss[:,:,:-1] * mask.permute(0,2,1)) / mask.sum()
             return kl_loss
         elif hparams.output_type == "MOL":
             h_pt_ps = 0
             for i in range(sample_T):
-                u = torch.zeros(mu.size()).uniform_(1e-5, 1 - 1e-5)
+                u = torch.zeros(mu_q.size()).uniform_(1e-5, 1 - 1e-5)
                 if use_cuda:
                     u = u.cuda()
                 z = torch.log(u) - torch.log(1 - u)
-                student_predict = mu + z * scale
+                student_predict = mu_q + z * scale_q
                 assert student_predict.requires_grad is True
 
                 student_predict = student_predict.permute(0, 2, 1)
@@ -365,7 +370,7 @@ class KLDivLoss(nn.Module):
                 h_pt_ps += torch.sum(teacher_log_p * mask) / mask.sum()
 
             # compute h_ps
-            a = scale.permute(0, 2, 1)
+            a = scale_q.permute(0, 2, 1)
             h_ps = torch.sum((torch.log(a[:, 1:, :]) + 2) * mask) / (mask.sum())
 
             # compute kl loss
@@ -626,7 +631,7 @@ def eval_model(global_step, writer, teacher_model, student_model, y, c, g, input
     save_waveplot(path, y_student=y_student, y_target=y_target, y_teacher=y_hat,writer=writer)
 
 
-def save_states(global_step, writer, y_hat, y, y_student, input_lengths, checkpoint_dir=None):
+def save_states(global_step, writer, y_hat, y, y_student,scale_tot, input_lengths, checkpoint_dir=None):
     print("Save intermediate states at step {}".format(global_step))
     idx = np.random.randint(0, len(y_hat))
     length = input_lengths[idx].data.cpu().numpy()
@@ -647,8 +652,14 @@ def save_states(global_step, writer, y_hat, y, y_student, input_lengths, checkpo
         y = P.inv_mulaw_quantize(y, hparams.quantize_channels)
     else:
         # (B, T)
+        scale = y_hat[:,1:,:]
+        teacher_log_scale = scale.data.cpu().numpy()
+        student_log_scale = torch.log(scale_tot).data.cpu().numpy()
+        writer.add_histogram('log_teacher_scale', teacher_log_scale, global_step)
+        writer.add_histogram('log_student_scale', student_log_scale, global_step)
         y_hat = sample_from_discretized_gaussian(
             y_hat, log_scale_min=hparams.log_scale_min)
+
         # (T,)
         y_hat = y_hat[idx].view(-1).data.cpu().numpy()
         y = y[idx].view(-1).data.cpu().numpy()
@@ -750,10 +761,11 @@ def __train_step(phase, epoch, global_step, global_test_step,
     loss = kl_loss + power_loss
 
     if train and step > 0 and step % hparams.checkpoint_interval == 0:
-        save_states(step, writer, y_hat, y, predict, input_lengths, checkpoint_dir)
+        save_states(step, writer, y_hat, y, predict,scale_tot, input_lengths, checkpoint_dir)
         save_checkpoint(student_model, optimizer, step, checkpoint_dir, epoch, ema)
     if train and step > 0 and step % 200 == 0:
-        save_states(step, writer, y_hat, y,predict, input_lengths, checkpoint_dir)
+        save_states(step, writer, y_hat, y,predict,scale_tot, input_lengths, checkpoint_dir)
+
     if do_eval:
         # NOTE: use train step (i.e., global_step) for filename
         eval_model(global_step, writer, teacher_model, student_model, y, c, g, input_lengths, eval_dir, ema)
@@ -871,7 +883,7 @@ def save_checkpoint(model, optimizer, step, checkpoint_dir, epoch, ema=None):
     print("Saved checkpoint:", checkpoint_path)
 
     if ema is not None:
-        averaged_model = clone_as_averaged_model(model, ema, name_='student',hparams=hparams)
+        averaged_model = clone_as_averaged_model(model, ema, name_=hparams.name,hparams=hparams)
         checkpoint_path = join(
             checkpoint_dir, "checkpoint_step{:09d}_ema.pth".format(global_step))
         torch.save({
