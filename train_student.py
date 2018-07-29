@@ -347,11 +347,9 @@ class KLDivLoss(nn.Module):
         if hparams.output_type == 'Gaussian':
             # teacher p,student q
             mu_p, scale_p = y_hat[:, :1, :], torch.exp(y_hat[:, 1:, :])
-            loss = torch.log(scale_p / scale_q) + (scale_q ** 2 - scale_p ** 2 + (mu_q - mu_p) ** 2) / (
-                    2 * scale_p ** 2)
-            loss += torch.log(scale_q / scale_p) + (scale_p ** 2 - scale_q ** 2 + (mu_q - mu_p) ** 2) / (
-                    2 * scale_q ** 2)
-            loss /= 2
+            loss = torch.log(scale_p / scale_q) + (scale_q ** 2 - scale_p ** 2 + (mu_q - mu_p) ** 2) / (2 * scale_p ** 2)
+            # loss += torch.log(scale_q / scale_p) + (scale_p ** 2 - scale_q ** 2 + (mu_q - mu_p) ** 2) / (2 * scale_q ** 2)
+            # loss /= 2
             loss += self.lambda_*(torch.log(scale_p)-torch.log(scale_q))**2
             kl_loss = torch.sum(loss[:,:,:-1] * mask.permute(0,2,1)) / mask.sum()
             return kl_loss
@@ -386,12 +384,12 @@ class PowerLoss(nn.Module):
 
     def forward(self, x, predict):
         power_loss_tot = 0
-        power_loss_tot += self.loss_fn(predict, x, frame_length=128, hop_length=32)
-        power_loss_tot += self.loss_fn(predict, x, frame_length=256, hop_length=64)
-        power_loss_tot += self.loss_fn(predict, x, frame_length=512, hop_length=128)
-        power_loss_tot += self.loss_fn(predict, x, frame_length=1024, hop_length=256)
+        #power_loss_tot += self.loss_fn(predict, x, frame_length=128, hop_length=32)
+        #power_loss_tot += self.loss_fn(predict, x, frame_length=256, hop_length=64)
+        #power_loss_tot += self.loss_fn(predict, x, frame_length=512, hop_length=128)
+        #power_loss_tot += self.loss_fn(predict, x, frame_length=1024, hop_length=256)
         power_loss_tot += self.loss_fn(predict, x, frame_length=2048, hop_length=512)
-        return power_loss_tot / 5
+        return power_loss_tot 
 
 
 def ensure_divisible(length, divisible_by=256, lower=True):
