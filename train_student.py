@@ -523,7 +523,7 @@ def time_string():
     return datetime.now().strftime('%Y-%m-%d %H:%M')
 
 
-def save_waveplot(path, y_teacher, y_target, y_student,writer):
+def save_waveplot(path, y_teacher, y_target, y_student,writer,global_step):
 
     sr = hparams.sample_rate
     plt.figure(figsize=(16, 9))
@@ -546,7 +546,7 @@ def save_waveplot(path, y_teacher, y_target, y_student,writer):
         plt.close()
         buff.seek(0)
         im = np.array(Image.open(buff))
-        writer.add_image('image', im)
+        writer.add_image('image', im,global_step)
     plt.close()
 
 
@@ -626,7 +626,7 @@ def eval_model(global_step, writer, teacher_model, student_model, y, c, g, input
 
     # save figure
     path = join(eval_dir, "step{:09d}_waveplots.png".format(global_step))
-    save_waveplot(path, y_student=y_student, y_target=y_target, y_teacher=y_hat,writer=writer)
+    save_waveplot(path, y_student=y_student, y_target=y_target, y_teacher=y_hat,writer=writer,global_step=global_step)
 
 
 def save_states(global_step, writer, y_hat, y, y_student,scale_tot, input_lengths, checkpoint_dir=None):
@@ -683,7 +683,7 @@ def save_states(global_step, writer, y_hat, y, y_student,scale_tot, input_length
     path = join(audio_dir, "step{:09d}_target.wav".format(global_step))
     librosa.output.write_wav(path, y, sr=hparams.sample_rate)
     path = join(audio_dir, "step{:09d}.jpg".format(global_step))
-    save_waveplot(path,y_teacher=y_hat,y_student=y_student,y_target=y,writer=writer)
+    save_waveplot(path,y_teacher=y_hat,y_student=y_student,y_target=y,writer=writer,global_step=global_step)
 
 def __train_step(phase, epoch, global_step, global_test_step,
                  teacher_model, student_model, kl_criterion, pl_criterion, optimizer, writer,
