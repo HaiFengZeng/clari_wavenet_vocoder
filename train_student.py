@@ -329,9 +329,9 @@ def get_power_loss_v1(y, y1, frame_length=1024, hop_length=256):
     window = torch.hann_window(frame_length, periodic=True)
     if use_cuda:
         window = window.cuda()
-    s = torch.stft(x, frame_length=frame_length, hop=hop_length, fft_size=frame_length, window=window)
-    s1 = torch.stft(x1, frame_length=frame_length, hop=hop_length, fft_size=frame_length, window=window)
-
+    s = torch.stft(x, n_fft=frame_length, hop_length=hop_length, window=window)
+    s1 = torch.stft(x1, n_fft=frame_length, hop_length=hop_length, window=window)
+    # set n_fft as frequence
     s_sqrt = torch.sqrt(torch.sum(s ** 2, -1))
     s1_sqrt = torch.sqrt(torch.sum(s1 ** 2, -1))
     ss = s_sqrt -s1_sqrt
@@ -387,7 +387,9 @@ class PowerLoss(nn.Module):
         #power_loss_tot += self.loss_fn(predict, x, frame_length=128, hop_length=32)
         #power_loss_tot += self.loss_fn(predict, x, frame_length=256, hop_length=64)
         #power_loss_tot += self.loss_fn(predict, x, frame_length=512, hop_length=128)
-        power_loss_tot += self.loss_fn(predict, x, frame_length=1024, hop_length=256)
+        power_loss_tot += self.loss_fn(predict, x, frame_length=4096, hop_length=256)
+        # fix this for pytorch 4.1
+        
         #power_loss_tot += self.loss_fn(predict, x, frame_length=2048, hop_length=512)
         return power_loss_tot 
 
