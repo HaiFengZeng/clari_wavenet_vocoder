@@ -1,3 +1,5 @@
+
+
 # WaveNet vocoder
 
 [![PyPI](https://img.shields.io/pypi/v/wavenet_vocoder.svg)](https://pypi.python.org/pypi/wavenet_vocoder)
@@ -189,7 +191,7 @@ python synthesis.py ${checkpoint_path} ${output_dir} --preset=<json> --hparams="
 Important options:
 
 - `--length=<n>`: (Un-conditional WaveNet only) Number of time steps to generate.
-- `--conditional=<path>`: (Required for onditional WaveNet) Path of local conditional features (.npy). If this is specified, number of time steps to generate is determined by the size of conditional feature.
+- `--conditional=<path>`: (Required for conditional WaveNet) Path of local conditional features (.npy). If this is specified, number of time steps to generate is determined by the size of conditional feature.
 
 e.g.,
 
